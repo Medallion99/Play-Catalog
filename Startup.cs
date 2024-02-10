@@ -6,26 +6,39 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
+using MongoDB.Driver;
+using Play.Catalog.Service.Repository;
+using Play.Catalog.Service.Settings;
 
 namespace Play.Catalog.Service
 {
     public class Startup
     {
         private const string AllowedOriginSetting = "AllowedOrigin";
-
+        private ServiceSettings serviceSettings;
 
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            _configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
+        public IConfiguration _configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             BsonSerializer.RegisterSerializer(new GuidSerializer(MongoDB.Bson.BsonType.String));
             BsonSerializer.RegisterSerializer(new DateTimeOffsetSerializer(MongoDB.Bson.BsonType.String));
+
+            serviceSettings = _configuration.GetSection(nameof(ServiceSettings)).Get<ServiceSettings>();
+
+            services.AddSingleton(serviceProvider => {
+                var mongoDb = _configuration.GetSection(nameof(MongoDbSettings)).Get<MongoDbSettings>();
+                var mongoClient = new MongoClient(mongoDb.ConnectionString);
+                return mongoClient.GetDatabase(serviceSettings.ServiceName);
+            });
+
+            services.AddSingleton<IItemsRepository, ItemsRepository>();
 
 
             services.AddControllers(options =>
@@ -50,7 +63,7 @@ namespace Play.Catalog.Service
 
                 app.UseCors(builder =>
                 {
-                    builder.WithOrigins(Configuration[AllowedOriginSetting])
+                    builder.WithOrigins(_configuration[AllowedOriginSetting])
                         .AllowAnyHeader()
                         .AllowAnyMethod();
                 });

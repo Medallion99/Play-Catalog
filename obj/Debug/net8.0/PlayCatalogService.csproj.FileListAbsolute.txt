@@ -43,3 +43,4 @@ C:\Users\DECAGON\Desktop\.Net Projects\PLAY CATALOG\src\PlayCatalogService\obj\D
 C:\Users\DECAGON\Desktop\.Net Projects\PLAY CATALOG\src\PlayCatalogService\obj\Debug\net8.0\PlayCatalogService.pdb
 C:\Users\DECAGON\Desktop\.Net Projects\PLAY CATALOG\src\PlayCatalogService\obj\Debug\net8.0\PlayCatalogService.genruntimeconfig.cache
 C:\Users\DECAGON\Desktop\.Net Projects\PLAY CATALOG\src\PlayCatalogService\obj\Debug\net8.0\ref\PlayCatalogService.dll
+C:\Users\DECAGON\Desktop\.Net Projects\PLAY CATALOG\src\PlayCatalogService\obj\Debug\net8.0\PlayCatalogService.sourcelink.json
