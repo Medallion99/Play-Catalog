@@ -3,30 +3,19 @@ using Play.Catalog.Service.Entities;
 
 namespace Play.Catalog.Service.Repository
 {
-    public class ItemsRepository
+    public class ItemsRepository : IItemsRepository
     {
         private const string collectionName = "Items";
         private readonly IMongoCollection<Item> dbCollection;
         private readonly FilterDefinitionBuilder<Item> filterBuilder = Builders<Item>.Filter;
 
-        public ItemsRepository()
+        public ItemsRepository(IMongoDatabase database)
         {
-            var mongoClient = new MongoClient("mongodb://localhost:27017");
-            if (mongoClient == null)
-            {
-                throw new InvalidOperationException("MongoClient is null.");
-            }
-            var database = mongoClient.GetDatabase("Catalog");
-            if (database == null)
-            {
-                throw new InvalidOperationException("MongoDB database is null.");
-            }
             dbCollection = database.GetCollection<Item>(collectionName);
         }
 
         public async Task<IReadOnlyCollection<Item>> GetAllAsync()
         {
-          
             return await dbCollection.Find(filterBuilder.Empty).ToListAsync();
         }
 
